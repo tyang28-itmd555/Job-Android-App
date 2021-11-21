@@ -10,20 +10,31 @@
         android:id="@+id/imageView"
         android:layout_width="150dp"
         android:layout_height="138dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginTop="36dp"
         android:src="@drawable/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
+        android:id="@+id/loginBtn"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="52dp"
         android:layout_marginTop="340dp"
         android:onClick="login"
-        android:text="Login"
+        android:text="Sign in"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/registerBtn"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="400dp"
+        android:onClick="login"
+        android:text="Sign up"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

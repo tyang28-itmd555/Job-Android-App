@@ -34,50 +34,49 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         textUsername = findViewById(R.id.editTextTextPersonName);
         textPassword = findViewById(R.id.editTextTextPassword);
-        button = findViewById(R.id.button);
-
+        button = findViewById(R.id.loginBtn);
     }
 
     /* click login button go to main page */
     public void login(@NonNull View view) {
-        switch (view.getId()) {
-            case R.id.button:
-                if(tryNum  == 0){
-                    Toast.makeText(this, "Try too many times, your account has been blocked, please contact customer service!",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                };
-                if (textUsername.getText().length() == 0) {
-                    tryNum--;
-                    Toast.makeText(this, "Wrong Credentials, Please enter a valid User name," +
-                                    tryNum + " attempts are left ",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (textPassword.getText().length() == 0) {
-                    tryNum--;
-                    Toast.makeText(this, "Wrong Credentials, Please enter a valid Password," +
-                                    tryNum + " attempts are left ",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if(textUsername.getText().length() > 0 && !textUsername.getText().toString().equals("admin")){
-                    tryNum--;
-                    Log.d(msg, textPassword.getText().toString());
-                    Toast.makeText(this, "Wrong Credentials, Your user name is wrong, Please enter another one, " +
-                                    tryNum + " attempts are left ",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if(textPassword.getText().length() > 0 && !textPassword.getText().toString().equals("123456")){
-                    tryNum--;
-                    Log.d(msg, textPassword.getText().toString());
-                    Toast.makeText(this, "Wrong Credentials, Your user password is wrong, Please enter another one, " +
-                                    tryNum + " attempts are left ",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if(textUsername.getText().toString().equals("admin") && textPassword.getText().toString().equals("123456")){
+//        switch (view.getId()) {
+//            case R.id.loginBtn:
+//                if(tryNum  == 0){
+//                    Toast.makeText(this, "Try too many times, your account has been blocked, please contact customer service!",
+//                            Toast.LENGTH_LONG).show();
+//                    return;
+//                };
+//                if (textUsername.getText().length() == 0) {
+//                    tryNum--;
+//                    Toast.makeText(this, "Wrong Credentials, Please enter a valid User name," +
+//                                    tryNum + " attempts are left ",
+//                            Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                if (textPassword.getText().length() == 0) {
+//                    tryNum--;
+//                    Toast.makeText(this, "Wrong Credentials, Please enter a valid Password," +
+//                                    tryNum + " attempts are left ",
+//                            Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                if(textUsername.getText().length() > 0 && !textUsername.getText().toString().equals("admin")){
+//                    tryNum--;
+//                    Log.d(msg, textPassword.getText().toString());
+//                    Toast.makeText(this, "Wrong Credentials, Your user name is wrong, Please enter another one, " +
+//                                    tryNum + " attempts are left ",
+//                            Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                if(textPassword.getText().length() > 0 && !textPassword.getText().toString().equals("123456")){
+//                    tryNum--;
+//                    Log.d(msg, textPassword.getText().toString());
+//                    Toast.makeText(this, "Wrong Credentials, Your user password is wrong, Please enter another one, " +
+//                                    tryNum + " attempts are left ",
+//                            Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                if(textUsername.getText().toString().equals("admin") && textPassword.getText().toString().equals("123456")){
                     Log.d(msg, "go to main page");
                     Toast.makeText(this, "Redirecting…", Toast.LENGTH_LONG).show();
                     Timer mTimer = new Timer();
@@ -88,8 +87,8 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     };
-                    mTimer.schedule(mTimerTask, 3000);//delay 5 second to run MainActivity
-                }
+                    mTimer.schedule(mTimerTask, 1000);//delay 5 second to run MainActivity
+//                }
         }
-    }
+//    }
 }
