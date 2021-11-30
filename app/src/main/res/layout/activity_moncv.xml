@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.phase2_1.MoncvActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fafafa"
+        >
+    
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/moncvToolbar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="#2c3e50"
+        app:theme="@style/ToolbarColoredBackArrow"
+        tools:layout_editor_absoluteY="3dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.0" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:id="@+id/cardView3"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/moncvToolbar">
+
+            <TextView
+                android:id="@+id/cvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Votre nom ici"
+                android:textAlignment="center"
+                android:textColor="#34495e"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="75dp"
+                android:text="votre email ici"
+                android:textAlignment="center"
+                android:textColor="#34495e"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_email_black_24dp"/>
+            <TextView
+                android:id="@+id/cvAdress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="180dp"
+                android:text="votre adresse ici"
+                android:textAlignment="center"
+                android:textColor="#34495e"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/ic_location_on_black_24dp"/>
+            <TextView
+                android:id="@+id/cvAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="110dp"
+                android:text="votre age ici"
+                android:textAlignment="center"
+                android:textColor="#34495e"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/cvTel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="145dp"
+                android:text="votre numero de telephone ici"
+                android:textAlignment="center"
+                android:textColor="#34495e"
+                android:textSize="16sp"
+
+                android:drawableStart="@drawable/ic_call_black_24dp"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+
+
+       <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewExp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:paddingBottom="25dp"
+           app:cardUseCompatPadding="true"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView3">
+
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Experiences"
+                android:textAlignment="center"
+                android:textColor="#34495e"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp"
+                 />
+           <LinearLayout
+               android:id="@+id/linearCvExp"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:layout_marginTop="55dp">
+
+           </LinearLayout>
+
+
+
+
+
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewFormation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="54dp"
+            android:paddingBottom="25dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintTop_toBottomOf="@+id/cardViewExp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Formations"
+                android:textAlignment="center"
+                android:textColor="#34495e"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/linearCvFormation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="55dp">
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

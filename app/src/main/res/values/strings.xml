@@ -1,0 +1,30 @@
+<resources>
+<string name="app_name">phase2_1</string>
+<string name="login">login</string>
+<string name="easyJob">Easy</string>
+<string name="jobs">Jobs</string>
+<string name="title_activity_maps">MapsActivity</string>
+<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCsJEJq__ST319xldzx-nHuKATrDKZCZfQ</string>
+<string name="le_boulot_de_vos_r_ves_vous_attends">Le boulot de vos rêves vous attends</string>
+<string name="identifiant">Identifiant</string>
+<string name="mot_de_passe">mot de passe</string>
+<string name="ou">Ou</string>
+<string name="signUp">Sign Up</string>
+<string name="email">email</string>
+<string name="s_inscrire">S\'inscrire</string>
+<string name="connectez_vous">Connectez-vous</string>
+<string name="des_milliers_d_opportinuit_s_au_bout_de_vos_doigts">Des milliers d\'opportinuités au bout de vos doigts</string>
+<string name="pas_de_compte">Pas de Compte ?</string>
+<string name="d_j_un_compte">Déjà un Compte !</string>
+<string name="title_activity_home">HomeActivity</string>
+
+<string name="navigation_drawer_open">Open navigation drawer</string>
+<string name="navigation_drawer_close">Close navigation drawer</string>
+
+<string name="action_settings">Settings</string>
+<string name="waiting">please wait ...</string>
+<string name="details"> <u>Details</u></string>
+
+<!-- TODO: Remove or change this placeholder text -->
+<string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

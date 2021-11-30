@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/ic_menu_camera.xml" value="0.19583333333333333" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/ic_menu_manage.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/ic_menu_share.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/ic_star_border_black_24dp.xml" value="0.13854166666666667" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/ic_star_white_24dp.xml" value="0.13854166666666667" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/drawable/transparence.xml" value="0.14947916666666666" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/activity_connexion.xml" value="0.335" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/activity_desc.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/activity_home2.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/activity_offer.xml" value="0.15384615384615385" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/app_bar_home2.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/content_home2.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/fragment_maps.xml" value="0.14402173913043478" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/nav_header_home2.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/offer_layout.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/row_experience.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/row_experience2.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/row_formation.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/layout/row_formation2.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/menu/home.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/menu/menu_cv.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/menu/menu_modif_cv.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/menu/menu_navigation.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/menu/offer_action_bar.xml" value="0.1" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.16041666666666668" />
+        <entry key="..\:/install/androidstudio/work/phase2_1/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.16041666666666668" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.phase2_1.FavorisActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_fav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:theme="@style/ToolbarColoredBackArrow"
+        android:background="#2c3e50"
+         />
+
+
+    <TextView
+        android:id="@+id/textFav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="95dp"
+        android:text="Aucun Favoris"
+
+        android:textAlignment="center"
+        android:textSize="16sp" />
+
+            <ListView
+                android:id="@+id/listview_fav"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:divider="@null"
+                />
+
+
+
+
+</RelativeLayout>
