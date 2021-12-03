@@ -23,6 +23,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,25 +88,26 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void addUser(String username,String password,String email) {
-//         Create a new user with a username and password
+        //any input can not be empty
+        if(username.length() == 0 || password.length() == 0 || email.length() == 0){
+            Toast.makeText(RegisterActivity.this, "any input can not be empty, Please try again,",
+            Toast.LENGTH_LONG).show();
+            return;
+        }
+        //Create a new user with a username and password
         CollectionReference usersCollection = db.collection("users");
         Map<String, Object> users = new HashMap<>();
         users.put("username", username);
         users.put("password", password);
         users.put("email", email);
+
+        users.put("favoriteJobs",new HashMap<>());
+        users.put("resume",new HashMap<>());
         usersCollection.document(username).set(users);
-//        CollectionReference cities = db.collection("cities");
-//        Map<String, Object> data1 = new HashMap<>();
-//        data1.put("name", "San Francisco");
-//        data1.put("state", "CA");
-//        data1.put("country", "USA");
-//        data1.put("capital", false);
-//        data1.put("population", 860000);
-//        data1.put("regions", Arrays.asList("west_coast", "norcal"));
-//        cities.document("SF").set(data1);
         Toast.makeText(RegisterActivity.this, "register successful!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(RegisterActivity.this,DescActivity.class);
-        intent.putExtra("id",username);
+//        intent.putExtra("id",username);
+        intent.putExtra("user", (Serializable) users);
         startActivity(intent);
     }
 

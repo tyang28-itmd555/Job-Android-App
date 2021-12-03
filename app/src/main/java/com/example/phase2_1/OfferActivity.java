@@ -69,7 +69,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
         Toolbar toolbar =(Toolbar) findViewById(R.id.toolbar_offer);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("details de l'offre");
+        getSupportActionBar().setTitle("Job Detail");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -79,6 +79,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.waiting));
+        user = new HashMap();
         user = (HashMap)getIntent().getSerializableExtra("user");
 
         offer_id = getIntent().getStringExtra("offer_id");
@@ -90,21 +91,9 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         location = (TextView)findViewById(R.id.offer_location);
         about = (TextView)findViewById(R.id.offer_about);
 
-        //judge this job whether favorite by user
-        try {
-            JSONArray jsonArray = new JSONArray(user.get("favoriteJobs"));
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject element = jsonArray.getJSONObject(i);
-                String jobId = element.getString("jobId");
-                if(jobId.equals(offer_id)){
-                    //initial favorite icon
-                    item.setIcon(R.drawable.ic_star_white_24dp);
-                    test_fav = 1;
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        //if this user has no any favorite job
+        System.out.println("favoriteJobs-----------------------------------");
+        System.out.println(user.get("favoriteJobs").toString());
 
         //get job Detail
         db.collection("jobDetail")
@@ -113,13 +102,9 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "task.getResult()" + " => " + task.getResult());
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 jobDetailData = document.getData();
                                 Log.d(TAG, document.getId() + " ==> " + document.getData());
-                                Log.d(TAG, "offer_id:"+offer_id);
-                                Log.d(TAG, "document_id:"+document.getId());
-                                Log.d(TAG, "document_id=:"+document.getId().trim());
                                 if(document.getId().trim().equals(offer_id)){
                                     Log.d(TAG, document.getId() + "  ===> " + document.getData());
                                     title.setText(document.getData().get("title").toString());
@@ -135,14 +120,15 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                         }
                     }
                 });
-        Log.i("debug","DEBUGME => id user = "+id+" et offer id = "+offer_id);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.offer_action_bar, menu);
         item = menu.findItem(R.id.fav);
+        System.out.println("item");
+        System.out.println(item);
+
         VerifServer();
 
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -151,6 +137,10 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                 if(test_fav == 0) {
                     System.out.println("will be invok AddFavServer");
                     AddFavServer();
+                }
+                else if(test_fav == 1) {
+                    System.out.println("will be invok removeFavServer");
+                    RemoveFavServer();
                 }
                 return true;
             }
@@ -175,7 +165,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
     public void VerifServer (){
         //judge the user whether favorite this job
-        if(((Map<?, ?>) user.get("favoriteJobs")).containsKey(offer_id)){
+        if( user.containsKey("favoriteJobs") && ((Map<?, ?>) user.get("favoriteJobs")).containsKey(offer_id)){
             //initial favorite icon
             item.setIcon(R.drawable.ic_star_white_24dp);
             test_fav = 1;
@@ -191,6 +181,14 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
         favoriteJobs = (Map) user.get("favoriteJobs");
         favoriteJobs.put(offer_id,jobDetailData);
+
+        System.out.println("offer_id -----------------------------------------------");
+        System.out.println(offer_id);
+        System.out.println("jobDetailData -----------------------------------------------");
+        System.out.println(jobDetailData);
+        System.out.println("favoriteJobs -----------------------------------------------");
+        System.out.println(favoriteJobs);
+
         user.put("favoriteJobs",favoriteJobs);
 
         usersCollection.document(user.get("username").toString()).set(user);
@@ -198,6 +196,28 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         Toast.makeText(OfferActivity.this, "Add to favorite!" , Toast.LENGTH_LONG).show();
         item.setIcon(R.drawable.ic_star_white_24dp);
         test_fav = 1;
+
+        System.out.println("usersDocument -----------------------------------------------");
+        System.out.println(usersCollection.document(user.get("username").toString()));
+    }
+
+    protected void RemoveFavServer (){
+        CollectionReference usersCollection = db.collection("users");
+        Map<String,Object> favoriteJobs = new HashMap<>();
+
+        favoriteJobs = (Map) user.get("favoriteJobs");
+        favoriteJobs.remove(offer_id);
+
+        System.out.println("favoriteJobs -----------------------------------------------");
+        System.out.println(favoriteJobs);
+
+        user.put("favoriteJobs",favoriteJobs);
+
+        usersCollection.document(user.get("username").toString()).set(user);
+
+        Toast.makeText(OfferActivity.this, "remove from favorite!" , Toast.LENGTH_LONG).show();
+        item.setIcon(R.drawable.ic_star_border_black_24dp);
+        test_fav = 0;
 
         System.out.println("usersDocument -----------------------------------------------");
         System.out.println(usersCollection.document(user.get("username").toString()));

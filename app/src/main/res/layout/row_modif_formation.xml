@@ -31,7 +31,7 @@
         android:layout_toRightOf="@+id/txtDate"
         android:background="@drawable/input_field"
         android:ems="10"
-        android:hint=" Diplome"
+        android:hint="School name"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp" />
@@ -45,7 +45,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/input_field"
         android:ems="10"
-        android:hint="Ecole"
+        android:hint="Major"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp"

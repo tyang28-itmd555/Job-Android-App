@@ -83,10 +83,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        getSupportActionBar().setTitle("Acceuil");
+        getSupportActionBar().setTitle("Job List");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
 
-//        user_id = getIntent().getParcelableExtra("user");
         user = (HashMap)getIntent().getSerializableExtra("user");
         Log.i("debug","DEBUGME ==================================>  user = "+ user );
         Log.i("debug","DEBUGME => id user = "+ user.get("username") );

@@ -6,8 +6,8 @@
 <string name="title_activity_maps">MapsActivity</string>
 <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCsJEJq__ST319xldzx-nHuKATrDKZCZfQ</string>
 <string name="le_boulot_de_vos_r_ves_vous_attends">Le boulot de vos rêves vous attends</string>
-<string name="identifiant">Identifiant</string>
-<string name="mot_de_passe">mot de passe</string>
+<string name="username">username</string>
+<string name="password">password</string>
 <string name="ou">Ou</string>
 <string name="signUp">Sign Up</string>
 <string name="email">email</string>

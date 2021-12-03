@@ -51,7 +51,7 @@ public class FavorisActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_fav);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Vos favoris");
+        getSupportActionBar().setTitle("Favoris Job");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -81,7 +81,7 @@ public class FavorisActivity extends AppCompatActivity {
             Offer offer = new Offer(id,title,place,contract,dateCreate,company);
             listOffers.add(offer);
         }
-        Toast.makeText(FavorisActivity.this, listOffers.get(0).toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(FavorisActivity.this, listOffers.get(0).toString(), Toast.LENGTH_SHORT).show();
         CustomAdaptderFav customAdaptder = new CustomAdaptderFav();
         listView.setAdapter(customAdaptder);
 

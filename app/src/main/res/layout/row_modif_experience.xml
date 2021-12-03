@@ -15,7 +15,7 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/input_field"
         android:ems="10"
-        android:hint="date Debut"
+        android:hint="start date"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp" />
@@ -30,7 +30,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/input_field"
         android:ems="10"
-        android:hint="date Fin"
+        android:hint="end date"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp" />
@@ -48,7 +48,7 @@
         android:layout_toRightOf="@+id/txtDebut"
         android:background="@drawable/input_field"
         android:ems="10"
-        android:hint=" poste occupé"
+        android:hint="job title"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp" />
@@ -64,7 +64,7 @@
 
         android:background="@drawable/input_field"
         android:ems="10"
-        android:hint="société"
+        android:hint="company name"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp" />
@@ -81,7 +81,7 @@
         android:layout_marginTop="14dp"
         android:background="@drawable/input_field"
         android:ems="10"
-        android:hint="a propos du poste"
+        android:hint="job content"
         android:inputType="textMultiLine"
         android:padding="10dp"
         android:textSize="15sp" />

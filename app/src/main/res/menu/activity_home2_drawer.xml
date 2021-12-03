@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_moncv"
             android:icon="@drawable/cv"
-            android:title="Mon cv" />
+            android:title="My cv" />
         <item
             android:id="@+id/nav_favoris"
             android:icon="@drawable/ic_star_white_24dp"
-            android:title="Mes favoris" />
+            android:title="My favorites" />
 
     </group>
-
-
-
 </menu>

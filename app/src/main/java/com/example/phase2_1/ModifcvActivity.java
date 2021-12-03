@@ -2,6 +2,7 @@ package com.example.phase2_1;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -32,33 +36,41 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModifcvActivity extends AppCompatActivity {
     LinearLayout linearLayoutP ;
     LinearLayout linearLayoutP2 ;
-    String user_cv,mFirstName,mLastName,mAdress,mTel,mAge,mEmail;
+    Map user_cv,user,resumeExeperience,resumeFormation;
+    String mFirstName,mLastName,mAdress,mTel,mAge,mEmail;
     EditText lastName,firstName,email,adress,tel,age;
     ProgressDialog dialog;
     List<String> expAsupp,formationAsupp;
     String midExp,mbegin,mend,mposition,mcompany,mabout;
     String midFormation,mdate,mname,mschool;
     int a = 0;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modifcv);
+        db = FirebaseFirestore.getInstance();
+
         Toolbar toolbar = (Toolbar)findViewById(R.id.modifcvToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Modifier mon CV");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.waiting));
 
-        user_cv = getIntent().getStringExtra("user_cv");
+        user_cv = (HashMap)getIntent().getSerializableExtra("userCv");
+        user = (HashMap)getIntent().getSerializableExtra("user");
 
         expAsupp = new ArrayList<>();
         formationAsupp = new ArrayList<>();
@@ -71,12 +83,9 @@ public class ModifcvActivity extends AppCompatActivity {
         email =(EditText)findViewById(R.id.txtEmail);
         adress =(EditText)findViewById(R.id.txtAdresse);
         tel =(EditText)findViewById(R.id.txtTel);
-        age =(EditText)findViewById(R.id.txtAge);
+//        age =(EditText)findViewById(R.id.txtAge);
 
-        InfoCvServer infoCvServer = new InfoCvServer();
-        infoCvServer.execute("http://192.168.56.1:8080/api/cv/"+user_cv);
-
-
+        infoCvServer();//render the cv information
     }
     public void onAddRow(View v) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -113,27 +122,24 @@ public class ModifcvActivity extends AppCompatActivity {
         linearLayoutP2.removeView((View) v.getParent());
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        System.out.println("onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_modif_cv, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        System.out.println("onOptionsItemSelected=========================================");
         int id = item.getItemId();
         if (id == R.id.menuModifcvValider){
 
              mFirstName = firstName.getText().toString();
              mLastName = lastName.getText().toString();
              mAdress = adress.getText().toString();
-             mAge = age.getText().toString();
+//             mAge = age.getText().toString();
              mTel = tel.getText().toString();
              mEmail = email.getText().toString();
-
-            UpdateCvServer updateCvServer = new UpdateCvServer();
-            updateCvServer.execute("http://192.168.56.1:8080/api/cv/"+user_cv);
 
             for (int i = 0 ; i < linearLayoutP.getChildCount() ; i++ ){
                 View rowView = linearLayoutP.getChildAt(i);
@@ -153,8 +159,8 @@ public class ModifcvActivity extends AppCompatActivity {
                 Log.i("debug",midExp+" "+mbegin+" "+mend+" "+mposition+" "+mcompany+" "+mabout);
 
                 try {
-                    UpdateOrAddExp updateOrAddExp = new UpdateOrAddExp();
-                    updateOrAddExp.execute("http://192.168.56.1:8080/api/experiences");
+//                    UpdateOrAddExp updateOrAddExp = new UpdateOrAddExp();
+//                    updateOrAddExp.execute("http://192.168.56.1:8080/api/experiences");
                     Thread.sleep(100);
 
                 } catch (InterruptedException e) {
@@ -176,16 +182,16 @@ public class ModifcvActivity extends AppCompatActivity {
                 mname = diplome.getText().toString();
 
                 try {
-                    UpdateOrAddFormation updateOrAddFormation = new UpdateOrAddFormation();
-                    updateOrAddFormation.execute("http://192.168.56.1:8080/api/formations");
+//                    UpdateOrAddFormation updateOrAddFormation= new UpdateOrAddFormation();
+//                    updateOrAddFormation.execute("http://192.168.56.1:8080/api/formations");
                     Thread.sleep(100);
-
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
             }
+
+            updateCvServer();
 
             for (int i = 0 ; i < expAsupp.size() ; i++ ){
                 DeleteExp deleteExp = new DeleteExp();
@@ -195,7 +201,7 @@ public class ModifcvActivity extends AppCompatActivity {
                 DeleteFormation deleteFormation = new DeleteFormation();
                 deleteFormation.execute("http://192.168.56.1:8080/api/formations/"+formationAsupp.get(i));
             }
-            finish();
+//            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -203,245 +209,216 @@ public class ModifcvActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        System.out.println("onSupportNavigateUp=================================");
+//        finish();
         return true;
     }
 
-    protected class InfoCvServer extends AsyncTask<String,Void,String>{
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                HttpClient client = new DefaultHttpClient();
-                HttpGet get = new HttpGet(params[0]);
-                ResponseHandler<String> buffer = new BasicResponseHandler();
-                String result = client.execute(get, buffer);
-                return result;
+    public void infoCvServer(){
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+        if (user_cv == null) {
+            Toast.makeText(ModifcvActivity.this, "connection error", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        @Override
-        protected void onPostExecute(String s) {
-            if (s == null) {
-                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-                return;
+        try{
+            JSONObject jsonObject = new JSONObject(user_cv);
+            if(jsonObject.getString("email") != "null") {
+                email.setText(jsonObject.getString("email"));
+            }
+//            if (jsonObject.getInt("age") != 0) {
+//                age.setText(String.valueOf(jsonObject.getInt("age")));
+//            }
+            if(!jsonObject.getString("tel").equals("0")) {
+                tel.setText(jsonObject.getString("tel"));
+            }
+            if (jsonObject.getString("adress") !="null") {
+                adress.setText(jsonObject.getString("adress"));
+            }
+            if(jsonObject.getString("firstName") != "null") {
+                firstName.setText(jsonObject.getString("firstName"));
+            }
+            if(jsonObject.getString("lastName") != "null") {
+                lastName.setText(jsonObject.getString("lastName"));
             }
 
-            try{
-                JSONObject jsonObject = new JSONObject(s);
-                if(jsonObject.getString("email") != "null") {
-                    email.setText(jsonObject.getString("email"));
-                }
-                if (jsonObject.getInt("age") != 0) {
-                    age.setText(String.valueOf(jsonObject.getInt("age")));
-                }
-                if(!jsonObject.getString("tel").equals("0")) {
-                    tel.setText(jsonObject.getString("tel"));
-                }
-                if (jsonObject.getString("adress") !="null") {
-                    adress.setText(jsonObject.getString("adress"));
-                }
-                if(jsonObject.getString("firstName") != "null") {
-                    firstName.setText(jsonObject.getString("firstName"));
-                }
-                if(jsonObject.getString("lastName") != "null") {
-                    lastName.setText(jsonObject.getString("lastName"));
-                }
+//            JSONArray jsonFormation = jsonObject.getJSONArray("formations");
+//            JSONArray jsonExperience = jsonObject.getJSONArray("experiences");
 
-                JSONArray jsonFormation = jsonObject.getJSONArray("formations");
-                JSONArray jsonExperience = jsonObject.getJSONArray("experiences");
+            Map<String,Object> formationsMap = new HashMap<>();
+            formationsMap = (Map) user_cv.get("formations");
 
-                for (int i = 0 ; i < jsonExperience.length() ; i++){
-                    JSONObject element = jsonExperience.getJSONObject(i);
-                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                     View rowView = inflater.inflate(R.layout.row_modif_experience, null);
+            Map<String,Object> experiencesMap = new HashMap<>();
+            experiencesMap = (Map) user_cv.get("experiences");
 
-                    EditText debut = (EditText)rowView.findViewById(R.id.txtDebut);
-                    EditText fin = (EditText)rowView.findViewById(R.id.txtFin);
-                    EditText position = (EditText)rowView.findViewById(R.id.txtPoste);
-                    EditText societe = (EditText)rowView.findViewById(R.id.txtSociete);
-                    EditText about = (EditText)rowView.findViewById(R.id.txtAbout);
-                    TextView idExp = (TextView) rowView.findViewById(R.id.idExp);
-                    idExp.setText(String.valueOf(element.getLong("id")));
-                    if(element.getString("begin") != "null") {
-                        debut.setText(element.getString("begin"));
-                    }
-                    if(element.getString("end") != "null") {
-                        fin.setText(element.getString("end"));
-                    }
-                    if(element.getString("position") != "null") {
-                        position.setText(element.getString("position"));
-                    }
-                    if(element.getString("company") != "null") {
-                        societe.setText(element.getString("company"));
-                    }
-                    if (element.getString("about") != "null") {
-                        about.setText(element.getString("about"));
-                    }
+//            for (int i = 0 ; i < jsonExperience.length() ; i++){
+            JSONObject jsonObjectExperiences = new JSONObject(experiencesMap);
 
-                    linearLayoutP.addView(rowView, linearLayoutP.getChildCount() );
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                 View rowView = inflater.inflate(R.layout.row_modif_experience, null);
 
+                EditText debut = (EditText)rowView.findViewById(R.id.txtDebut);
+                EditText fin = (EditText)rowView.findViewById(R.id.txtFin);
+                EditText position = (EditText)rowView.findViewById(R.id.txtPoste);
+                EditText societe = (EditText)rowView.findViewById(R.id.txtSociete);
+                EditText about = (EditText)rowView.findViewById(R.id.txtAbout);
+                TextView idExp = (TextView) rowView.findViewById(R.id.idExp);
+                //idExp.setText(String.valueOf(jsonObjectExperiences.getLong("id")));
+                if(jsonObjectExperiences.getString("begin") != "null") {
+                    debut.setText(jsonObjectExperiences.getString("begin"));
+                }
+                if(jsonObjectExperiences.getString("end") != "null") {
+                    fin.setText(jsonObjectExperiences.getString("end"));
+                }
+                if(jsonObjectExperiences.getString("position") != "null") {
+                    position.setText(jsonObjectExperiences.getString("position"));
+                }
+                if(jsonObjectExperiences.getString("company") != "null") {
+                    societe.setText(jsonObjectExperiences.getString("company"));
+                }
+                if (jsonObjectExperiences.getString("about") != "null") {
+                    about.setText(jsonObjectExperiences.getString("about"));
                 }
 
-                for (int i = 0 ; i < jsonFormation.length() ; i++){
-                    JSONObject element = jsonFormation.getJSONObject(i);
-                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View rowView = inflater.inflate(R.layout.row_modif_formation, null);
+                linearLayoutP.addView(rowView, linearLayoutP.getChildCount() );
 
-                    EditText date = (EditText)rowView.findViewById(R.id.txtDate);
-                    EditText diplome = (EditText)rowView.findViewById(R.id.txtDiplome);
-                    EditText ecole = (EditText)rowView.findViewById(R.id.txtEcole);
-                    TextView idFormation = (TextView) rowView.findViewById(R.id.idFormation);
+//            }
+                JSONObject jsonObjectFormations = new JSONObject(formationsMap);
 
-                    idFormation.setText(String.valueOf(element.getLong("id")));
-                    if (element.getString("date") != "null") {
-                        date.setText(element.getString("date"));
-                    }
-                    if(element.getString("name") != "null") {
-                        diplome.setText(element.getString("name"));
-                    }
-                    if(element.getString("school") != "null") {
-                        ecole.setText(element.getString("school"));
-                    }
+                LayoutInflater inflaterModif = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View ModifRowView = inflaterModif.inflate(R.layout.row_modif_formation, null);
 
-                    linearLayoutP2.addView(rowView, linearLayoutP2.getChildCount() );
+                EditText date = (EditText)ModifRowView.findViewById(R.id.txtDate);
+                EditText diplome = (EditText)ModifRowView.findViewById(R.id.txtDiplome);
+                EditText ecole = (EditText)ModifRowView.findViewById(R.id.txtEcole);
+                TextView idFormation = (TextView) ModifRowView.findViewById(R.id.idFormation);
+
+//                idFormation.setText(String.valueOf(jsonObjectFormations.getLong("id")));
+                if (jsonObjectFormations.getString("date") != "null") {
+                    date.setText(jsonObjectFormations.getString("date"));
+                }
+                if(jsonObjectFormations.getString("name") != "null") {
+                    diplome.setText(jsonObjectFormations.getString("name"));
+                }
+                if(jsonObjectFormations.getString("school") != "null") {
+                    ecole.setText(jsonObjectFormations.getString("school"));
                 }
 
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+                linearLayoutP2.addView(ModifRowView, linearLayoutP2.getChildCount() );
+//            }
 
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 
-    protected class UpdateCvServer extends AsyncTask<String,Void,String>{
-        @Override
-        protected void onPreExecute() {
-            dialog.show();
-        }
+    public void updateCvServer() {
+        CollectionReference usersCollection = db.collection("users");//get the usercollection from firebae
+        Map<String, Object> resume = new HashMap<>();
 
-        @Override
-        protected String doInBackground(String... params) {
+        resume.put("firstName", mFirstName);
+        resume.put("lastName", mLastName);
+        resume.put("adress", mAdress);
+//        resume.put("age", mAge);
+        resume.put("email", mEmail);
+        resume.put("tel", mTel);
 
-            try{
+        resumeExeperience = new HashMap<>();
+        resumeExeperience.put("begin",mbegin);
+        resumeExeperience.put("end",mend);
+        resumeExeperience.put("position",mposition);
+        resumeExeperience.put("company",mcompany);
+        resumeExeperience.put("about",mabout);
 
+        resumeFormation = new HashMap<>();
+        resumeFormation.put("date",mdate);
+        resumeFormation.put("school",mschool);
+        resumeFormation.put("name",mname);
 
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost(params[0]);
-                List<NameValuePair> form = new ArrayList<>();
-                form.add(new BasicNameValuePair("firstName",mFirstName));
-                form.add(new BasicNameValuePair("lastName",mLastName));
-                form.add(new BasicNameValuePair("adress",mAdress));
-                form.add(new BasicNameValuePair("age",mAge));
-                form.add(new BasicNameValuePair("email",mEmail));
-                form.add(new BasicNameValuePair("tel",mTel));
-                post.setEntity(new UrlEncodedFormEntity(form, HTTP.UTF_8));
-                ResponseHandler<String> buffer = new BasicResponseHandler();
-                String result = client.execute(post,buffer);
+        resume.put("experiences",resumeExeperience);
+        resume.put("formations",resumeFormation);
 
-                return result;
-            }catch(Exception e){
-                e.printStackTrace();
-                return null;
-            }
+        user.put("resume",resume);
 
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-
-            if (s == null) {
-                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            try{
-                JSONObject jsonObject = new JSONObject(s);
-                if(jsonObject.getString("status").equals("ok")){
-                    Toast.makeText(ModifcvActivity.this, "Cv modifié", Toast.LENGTH_SHORT).show();
-                }
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-        }
+        usersCollection.document(user.get("username").toString()).set(user);
+        //pass in parameter to moncvActivity
+        Intent intent = new Intent(ModifcvActivity.this,MoncvActivity.class);
+        intent.putExtra("user",(Serializable) user);
+        startActivity(intent);
+//        }
     }
 
-    protected class UpdateOrAddExp extends AsyncTask<String,Void,String>{
-        @Override
-        protected String doInBackground(String... params) {
-            try{
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost(params[0]);
-                List<NameValuePair> form = new ArrayList<>();
-                form.add(new BasicNameValuePair("idCV",user_cv));
-                form.add(new BasicNameValuePair("id",midExp));
-                form.add(new BasicNameValuePair("begin",mbegin));
-                form.add(new BasicNameValuePair("end",mend));
-                form.add(new BasicNameValuePair("position",mposition));
-                form.add(new BasicNameValuePair("company",mcompany));
-                form.add(new BasicNameValuePair("about",mabout));
-                post.setEntity(new UrlEncodedFormEntity(form,HTTP.UTF_8));
-                ResponseHandler<String> buffer = new BasicResponseHandler();
-                String result = client.execute(post,buffer);
-                a++;
-                Log.i("debug","a ==> "+a);
-                return result;
+//    protected class UpdateOrAddExp extends AsyncTask<String,Void,String>{
+//        @Override
+//        protected String doInBackground(String... params) {
+//            try{
+//                HttpClient client = new DefaultHttpClient();
+//                HttpPost post = new HttpPost(params[0]);
+//                List<NameValuePair> form = new ArrayList<>();
+//                form.add(new BasicNameValuePair("idCV",user_cv));
+//                form.add(new BasicNameValuePair("id",midExp));
+//                form.add(new BasicNameValuePair("begin",mbegin));
+//                form.add(new BasicNameValuePair("end",mend));
+//                form.add(new BasicNameValuePair("position",mposition));
+//                form.add(new BasicNameValuePair("company",mcompany));
+//                form.add(new BasicNameValuePair("about",mabout));
+//                post.setEntity(new UrlEncodedFormEntity(form,HTTP.UTF_8));
+//                ResponseHandler<String> buffer = new BasicResponseHandler();
+//                String result = client.execute(post,buffer);
+//                a++;
+//                Log.i("debug","a ==> "+a);
+//                return result;
+//
+//            }catch(Exception e){
+//                e.printStackTrace();
+//                return null;
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            if (s == null) {
+//                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            Log.i("debug","in modif or add exp");
+//
+//
+//        }
+//    }
 
-            }catch(Exception e){
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (s == null) {
-                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Log.i("debug","in modif or add exp");
-
-
-        }
-    }
-
-    protected class UpdateOrAddFormation extends AsyncTask<String,Void,String>{
-        @Override
-        protected String doInBackground(String... params) {
-            try{
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost(params[0]);
-                List<NameValuePair> form = new ArrayList<>();
-                form.add(new BasicNameValuePair("idCV",user_cv));
-                form.add(new BasicNameValuePair("id",midFormation));
-                form.add(new BasicNameValuePair("date",mdate));
-                form.add(new BasicNameValuePair("name",mname));
-                form.add(new BasicNameValuePair("school",mschool));
-                post.setEntity(new UrlEncodedFormEntity(form,HTTP.UTF_8));
-                ResponseHandler<String> buffer = new BasicResponseHandler();
-                String result = client.execute(post,buffer);
-                return result;
-
-            }catch(Exception e){
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (s == null) {
-                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Log.i("debug","in modif or add formation");
-        }
-    }
+//    protected class UpdateOrAddFormation extends AsyncTask<String,Void,String>{
+//        @Override
+//        protected String doInBackground(String... params) {
+//            try{
+//                HttpClient client = new DefaultHttpClient();
+//                HttpPost post = new HttpPost(params[0]);
+//                List<NameValuePair> form = new ArrayList<>();
+//                form.add(new BasicNameValuePair("idCV",user_cv));
+//                form.add(new BasicNameValuePair("id",midFormation));
+//                form.add(new BasicNameValuePair("date",mdate));
+//                form.add(new BasicNameValuePair("name",mname));
+//                form.add(new BasicNameValuePair("school",mschool));
+//                post.setEntity(new UrlEncodedFormEntity(form,HTTP.UTF_8));
+//                ResponseHandler<String> buffer = new BasicResponseHandler();
+//                String result = client.execute(post,buffer);
+//                return result;
+//
+//            }catch(Exception e){
+//                e.printStackTrace();
+//                return null;
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            if (s == null) {
+//                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            Log.i("debug","in modif or add formation");
+//        }
+//    }
 
     protected class DeleteExp extends AsyncTask<String,Void,String>{
         @Override
