@@ -57,11 +57,6 @@ public class FavorisActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         user = (HashMap)getIntent().getSerializableExtra("user");
-        System.out.println("user===============================");
-        System.out.println(user);
-//        CollectionReference usersCollection = db.collection("users");
-//        usersCollection.document(user.get("username").toString());
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_fav);
         setSupportActionBar(toolbar);
@@ -78,7 +73,7 @@ public class FavorisActivity extends AppCompatActivity {
         textFav = (TextView)findViewById(R.id.textFav);
         textFav.setVisibility(View.INVISIBLE);
 
-        //get job users
+        //get job users from firebase
         db.collection("users")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -86,12 +81,10 @@ public class FavorisActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d(TAG, document.getId() + " ==> " + document.getData());
                                 if(document.getId().equals(user.get("username").toString())){
                                     Log.d(TAG, document.getId() + " =========================> ");
 
                                     Map<String,Object> favoriteJobs = new HashMap<>();
-//                                    favoriteJobs = (Map) user.get("favoriteJobs");
                                     favoriteJobs = (Map) document.getData().get("favoriteJobs");
 
                                     for (String key : favoriteJobs.keySet()) {
@@ -118,10 +111,6 @@ public class FavorisActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-
-        //user_id = getIntent().getStringExtra("user_id");
         FavServer favServer = new FavServer();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -129,7 +118,6 @@ public class FavorisActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(FavorisActivity.this,OfferActivity.class);
                 intent.putExtra("offer_id",String.valueOf(listOffers.get(position).getId()));
-                //intent.putExtra("user_id",user_id);
                 intent.putExtra("user",(Serializable) user);
                 intent.putExtra("lon", listOffers.get(position).getLon());
                 intent.putExtra("lat", listOffers.get(position).getLat());

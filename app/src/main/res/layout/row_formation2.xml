@@ -30,7 +30,7 @@
         android:layout_toEndOf="@+id/dateFormation"
         android:layout_toRightOf="@+id/dateFormation"
         android:paddingLeft="30dp"
-        android:text="qwqwq"
+        android:text=""
         android:textAlignment="textStart"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -45,7 +45,7 @@
         android:layout_marginTop="7dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="15dp"
-        android:text="ssddd"
+        android:text=""
         android:textAlignment="textStart" />
 
 </RelativeLayout>

@@ -61,7 +61,7 @@ public class MoncvActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.moncvToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Mon CV");
+        getSupportActionBar().setTitle("My CV");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -104,7 +104,6 @@ public class MoncvActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        System.out.println("onOptionsItemSelected------------------------------");
         int id = item.getItemId();
 
         if(id == R.id.menuModifcv){
@@ -133,8 +132,6 @@ public class MoncvActivity extends AppCompatActivity {
     public void  moncvServer() {
         userCv = new HashMap<>();
         userCv = (Map) user.get("resume");
-        System.out.println("userCv =========================================>");
-        System.out.println(userCv);
         //dialog.dismiss();
         if (userCv == null) {
             Toast.makeText(MoncvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
@@ -143,7 +140,6 @@ public class MoncvActivity extends AppCompatActivity {
         try {
             Log.i("debug", "enter in async");
             JSONObject jsonObject = new JSONObject(userCv);
-//            Log.i("debug", jsonObject.getString("firstName") + " " + jsonObject.getString("tel") + " " + jsonObject.getString("adress") + " " + jsonObject.getInt("age"));
 
             if(jsonObject.getString("firstName") != "null" && jsonObject.getString("lastName") != "null"  &&
             jsonObject.getString("firstName").length() > 0 && jsonObject.getString("lastName").length() > 0 )
@@ -153,9 +149,6 @@ public class MoncvActivity extends AppCompatActivity {
             if(jsonObject.getString("email") != "null" && jsonObject.getString("email").length() > 0) {
                 email.setText(jsonObject.getString("email"));
             }
-//            if (jsonObject.getString("age") != "null" && jsonObject.getString("age").length() > 0) {
-//                age.setText(String.valueOf(jsonObject.getString("age")) + "years old");
-//            }
 
             if(jsonObject.getString("tel") != "null" && jsonObject.getString("tel").length() > 0) {
                 tel.setText(jsonObject.getString("tel"));
@@ -168,12 +161,6 @@ public class MoncvActivity extends AppCompatActivity {
 
             Map<String,Object> experiencesMap = new HashMap<>();
             experiencesMap = (Map) userCv.get("experiences");
-
-            System.out.println("experiencesMap============================>");
-            System.out.println(experiencesMap);
-
-            System.out.println("formationsMap============================>");
-            System.out.println(formationsMap);
 
             listExperiences.clear();
             listFormations.clear();

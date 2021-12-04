@@ -8,11 +8,8 @@
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="4dp"
-
     android:layout_marginBottom="20dp"
-
     >
-
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:orientation="vertical"

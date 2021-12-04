@@ -1,8 +1,6 @@
 package com.example.phase2_1;
 
-
 //import java.util.List;
-
 
 public class Offer {
 

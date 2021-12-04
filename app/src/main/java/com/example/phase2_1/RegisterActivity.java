@@ -97,7 +97,6 @@ public class RegisterActivity extends AppCompatActivity {
         users.put("username", username);
         users.put("password", password);
         users.put("email", email);
-
         users.put("favoriteJobs",new HashMap<>());
         users.put("resume",new HashMap<>());
         usersCollection.document(username).set(users);
@@ -105,52 +104,5 @@ public class RegisterActivity extends AppCompatActivity {
         Intent intent = new Intent(RegisterActivity.this,DescActivity.class);
         intent.putExtra("user", (Serializable) users);
         startActivity(intent);
-    }
-
-    protected class RegisterServer extends AsyncTask<String,Void,String>{
-        @Override
-        protected String doInBackground(String... params) {
-            try{
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost(params[0]);
-                List<NameValuePair> form = new ArrayList<>();
-                form.add(new BasicNameValuePair("username",username));
-                form.add(new BasicNameValuePair("password",password));
-                form.add(new BasicNameValuePair("email",email));
-                post.setEntity(new UrlEncodedFormEntity(form, HTTP.UTF_8));
-                ResponseHandler<String> buffer = new BasicResponseHandler();
-                String result = client.execute(post,buffer);
-
-                return result;
-            }catch(Exception e){
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (s == null) {
-                Toast.makeText(RegisterActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            try{
-                JSONObject jsonObject = new JSONObject(s);
-                if(jsonObject.getString("status").equals("ok")){
-                    Toast.makeText(RegisterActivity.this, "Bienvenue !", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterActivity.this,DescActivity.class);
-                    intent.putExtra("id",jsonObject.getString("id"));
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(RegisterActivity.this, "identifiant ou email deja utilisé", Toast.LENGTH_SHORT).show();
-
-                }
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-        }
     }
 }

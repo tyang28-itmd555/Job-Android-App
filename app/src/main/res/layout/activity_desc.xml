@@ -83,6 +83,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9"
         app:layout_constraintHorizontal_bias="0.502" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

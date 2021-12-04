@@ -72,31 +72,32 @@
 
     <TextView
 
+        android:id="@+id/expCompany"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" "
-        android:layout_marginLeft="16dp"
+        android:layout_below="@+id/dateDebut"
 
-        android:id="@+id/expCompany"
-        android:layout_marginTop="8dp"
-        android:layout_alignLeft="@+id/dateDebut"
         android:layout_alignStart="@+id/dateDebut"
-        android:layout_below="@+id/dateDebut" />
+        android:layout_alignLeft="@+id/dateDebut"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="8dp"
+        android:text=" " />
 
     <TextView
         android:id="@+id/expAbout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
-        android:paddingBottom="10dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
+        android:layout_below="@+id/expPosition"
+        android:layout_alignStart="@+id/expCompany"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+
+        android:layout_marginTop="40dp"
         android:layout_marginRight="8dp"
-
-        android:layout_marginLeft="8dp"
-
-        android:layout_marginTop="37dp"
-        android:layout_below="@+id/expPosition" />
+        android:paddingLeft="0dp"
+        android:paddingRight="25dp"
+        android:paddingBottom="10dp"
+        android:textAlignment="textStart" />
 
 
 </RelativeLayout>

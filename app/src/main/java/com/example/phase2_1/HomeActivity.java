@@ -87,7 +87,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
 
         user = (HashMap)getIntent().getSerializableExtra("user");
-        Log.i("debug","DEBUGME ==================================>  user = "+ user );
         Log.i("debug","DEBUGME => id user = "+ user.get("username") );
         homeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,16 +94,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = new Intent();
                 intent.setClass(HomeActivity.this,OfferActivity.class);
                 intent.putExtra("offer_id",listOffers.get(position).getId());
-//                intent.putExtra("user_id",user_id);
-                System.out.println("view-----------------");
-                System.out.println(view);
-                System.out.println("id-----------------");
-                System.out.println(id);
-
-                System.out.println("listOffers current-----------------");
-                System.out.println(listOffers.get(position).getLat());
-
-
                 intent.putExtra("user", (Serializable) user);
                 intent.putExtra("lon", listOffers.get(position).getLon());
                 intent.putExtra("lat", listOffers.get(position).getLat());
@@ -112,7 +101,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        //get job list data
+        //get job list data from firebase
         db.collection("jobs")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -167,7 +156,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-//        OfferServer offerServer = new OfferServer();
     }
 
     @Override
@@ -176,7 +164,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -247,7 +234,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                  numberOfDay = (long)diff/CONST_DURATION_OF_DAY;
             }catch (Exception e){
                 e.printStackTrace();
-               // date.setText(listOffers.get(i).getDateCreate());
             }
             return view;
         }
