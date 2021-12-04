@@ -52,6 +52,13 @@ public class Offer {
         this.lon = lon;
     }
 
+    public Offer(String id, String title, String place,String company) {
+        this.id = id;
+        this.title = title;
+        this.place = place;
+        this.company = company;
+    }
+
     public String getId() {
         return id;
     }

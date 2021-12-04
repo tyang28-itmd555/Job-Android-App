@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/hurui/Desktop/ITMD_555/Final_Project/Project/Job-Android-App/app/src/main/res/layout/activity_desc.xml" value="0.1" />
         <entry key="..\:/install/androidstudio/work/Job-Android-App/app/src/main/res/layout/activity_connexion.xml" value="0.1" />
         <entry key="..\:/install/androidstudio/work/Job-Android-App/app/src/main/res/layout/activity_desc.xml" value="0.1" />
         <entry key="..\:/install/androidstudio/work/Job-Android-App/app/src/main/res/layout/activity_home2.xml" value="0.1" />
@@ -57,7 +58,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
