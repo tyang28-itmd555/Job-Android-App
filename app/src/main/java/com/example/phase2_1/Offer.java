@@ -19,10 +19,9 @@ public class Offer {
 
     //private List<Tags> tags;
 
-
-
     public Offer() {
     }
+
 
     public Offer(String about, String place, double lon, double lat, String contract, int salary, String dateCreate, String company) {
         this.about = about;
@@ -42,6 +41,13 @@ public class Offer {
         this.place = place;
         this.contract = contract;
         this.dateCreate = dateCreate;
+        this.company = company;
+    }
+
+    public Offer(String id, String title, String place,String company) {
+        this.id = id;
+        this.title = title;
+        this.place = place;
         this.company = company;
     }
 
