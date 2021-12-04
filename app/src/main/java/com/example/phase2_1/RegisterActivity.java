@@ -66,9 +66,6 @@ public class RegisterActivity extends AppCompatActivity {
                 password = txtPassword.getText().toString();
                 email = txtEmail.getText().toString();
                 addUser(username,password,email);
-
-                //RegisterServer registerServer = new RegisterServer();
-                //registerServer.execute("http://192.168.56.1:8080/register");
             }
         });
 
@@ -106,7 +103,6 @@ public class RegisterActivity extends AppCompatActivity {
         usersCollection.document(username).set(users);
         Toast.makeText(RegisterActivity.this, "register successful!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(RegisterActivity.this,DescActivity.class);
-//        intent.putExtra("id",username);
         intent.putExtra("user", (Serializable) users);
         startActivity(intent);
     }
@@ -121,7 +117,6 @@ public class RegisterActivity extends AppCompatActivity {
                 form.add(new BasicNameValuePair("username",username));
                 form.add(new BasicNameValuePair("password",password));
                 form.add(new BasicNameValuePair("email",email));
-
                 post.setEntity(new UrlEncodedFormEntity(form, HTTP.UTF_8));
                 ResponseHandler<String> buffer = new BasicResponseHandler();
                 String result = client.execute(post,buffer);

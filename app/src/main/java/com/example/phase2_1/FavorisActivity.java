@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -17,7 +19,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -41,13 +48,20 @@ public class FavorisActivity extends AppCompatActivity {
     ProgressDialog dialog;
     TextView textFav;
     private static final String TAG = "DocSnippets";
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favoris);
+        db = FirebaseFirestore.getInstance();
 
         user = (HashMap)getIntent().getSerializableExtra("user");
+        System.out.println("user===============================");
+        System.out.println(user);
+//        CollectionReference usersCollection = db.collection("users");
+//        usersCollection.document(user.get("username").toString());
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_fav);
         setSupportActionBar(toolbar);
@@ -64,26 +78,48 @@ public class FavorisActivity extends AppCompatActivity {
         textFav = (TextView)findViewById(R.id.textFav);
         textFav.setVisibility(View.INVISIBLE);
 
-        Map<String,Object> favoriteJobs = new HashMap<>();
-        favoriteJobs = (Map) user.get("favoriteJobs");
+        //get job users
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d(TAG, document.getId() + " ==> " + document.getData());
+                                if(document.getId().equals(user.get("username").toString())){
+                                    Log.d(TAG, document.getId() + " =========================> ");
 
-        for (String key : favoriteJobs.keySet()) {
-            Map<String,Object> favoriteVal = new HashMap<>();
-            favoriteVal = (Map) favoriteJobs.get(key);
+                                    Map<String,Object> favoriteJobs = new HashMap<>();
+//                                    favoriteJobs = (Map) user.get("favoriteJobs");
+                                    favoriteJobs = (Map) document.getData().get("favoriteJobs");
 
-            System.out.println("Key = " + key + ", Value = " + favoriteVal);
-            String id = key;
-            String title = favoriteVal.get("title").toString();
-            String place = favoriteVal.get("place").toString();
-            String contract = favoriteVal.get("contract").toString();
-            String dateCreate = favoriteVal.get("data").toString();
-            String company = favoriteVal.get("company").toString();
-            Offer offer = new Offer(id,title,place,contract,dateCreate,company);
-            listOffers.add(offer);
-        }
-//        Toast.makeText(FavorisActivity.this, listOffers.get(0).toString(), Toast.LENGTH_SHORT).show();
-        CustomAdaptderFav customAdaptder = new CustomAdaptderFav();
-        listView.setAdapter(customAdaptder);
+                                    for (String key : favoriteJobs.keySet()) {
+                                        Map<String,Object> favoriteVal = new HashMap<>();
+                                        favoriteVal = (Map) favoriteJobs.get(key);
+
+                                        System.out.println("Key = " + key + ", Value = " + favoriteVal);
+                                        String id = key;
+                                        String title = favoriteVal.get("title").toString();
+                                        String place = favoriteVal.get("place").toString();
+                                        String company = favoriteVal.get("company").toString();
+                                        Double lon = new Double(favoriteVal.get("lon").toString());
+                                        Double lat = new Double(favoriteVal.get("lat").toString());
+                                        Offer offer = new Offer(id,title,place,lon,lat,company);
+                                        listOffers.add(offer);
+                                    }
+                                    CustomAdaptderFav customAdaptder = new CustomAdaptderFav();
+                                    listView.setAdapter(customAdaptder);
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+
+
 
         //user_id = getIntent().getStringExtra("user_id");
         FavServer favServer = new FavServer();
@@ -95,6 +131,8 @@ public class FavorisActivity extends AppCompatActivity {
                 intent.putExtra("offer_id",String.valueOf(listOffers.get(position).getId()));
                 //intent.putExtra("user_id",user_id);
                 intent.putExtra("user",(Serializable) user);
+                intent.putExtra("lon", listOffers.get(position).getLon());
+                intent.putExtra("lat", listOffers.get(position).getLat());
                 startActivity(intent);
             }
         });
@@ -197,19 +235,19 @@ public class FavorisActivity extends AppCompatActivity {
             company.setText(listOffers.get(i).getCompany());
 
             //date
-            String dateStr = listOffers.get(i).getDateCreate();
-            SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd ");
-            long numberOfDay=0;
-            try{
-                long CONST_DURATION_OF_DAY = 1000l * 60 * 60 * 24;
-                Date  datee = sdf.parse(dateStr);
-                Date today = new Date();
-                long diff = Math.abs(datee.getTime() - today.getTime());
-                numberOfDay = (long)diff/CONST_DURATION_OF_DAY;
-            }catch (Exception e){
-                e.printStackTrace();
-                // date.setText(listOffers.get(i).getDateCreate());
-            }
+//            String dateStr = listOffers.get(i).getDateCreate();
+//            SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd ");
+//            long numberOfDay=0;
+//            try{
+//                long CONST_DURATION_OF_DAY = 1000l * 60 * 60 * 24;
+//                Date  datee = sdf.parse(dateStr);
+//                Date today = new Date();
+//                long diff = Math.abs(datee.getTime() - today.getTime());
+//                numberOfDay = (long)diff/CONST_DURATION_OF_DAY;
+//            }catch (Exception e){
+//                e.printStackTrace();
+//                // date.setText(listOffers.get(i).getDateCreate());
+//            }
             return view;
         }
     }

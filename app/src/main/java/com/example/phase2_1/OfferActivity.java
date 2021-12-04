@@ -48,6 +48,7 @@ import java.util.Map;
 
 public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallback {
     private String offer_id,id;
+    private Double lon,lat;
     private Offer offer;
     private ProgressDialog dialog;
     private TextView title,company,contract,salary,location,about;
@@ -60,6 +61,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
     private GoogleMap mMap;
     private Map jobDetailData;//jobDetailData
     private Map user;
+    private Map<String,Object> favoriteJobs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +81,14 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.waiting));
+        favoriteJobs = new HashMap<>();
         user = new HashMap();
         user = (HashMap)getIntent().getSerializableExtra("user");
-
+        favoriteJobs = (Map) user.get("favoriteJobs");
         offer_id = getIntent().getStringExtra("offer_id");
+
+        System.out.println("lon------------------------");
+        System.out.println(lon);
 
         title = (TextView)findViewById(R.id.offer_title);
         company = (TextView)findViewById(R.id.offer_company);
@@ -90,10 +96,6 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         salary = (TextView)findViewById(R.id.offer_salary);
         location = (TextView)findViewById(R.id.offer_location);
         about = (TextView)findViewById(R.id.offer_about);
-
-        //if this user has no any favorite job
-        System.out.println("favoriteJobs-----------------------------------");
-        System.out.println(user.get("favoriteJobs").toString());
 
         //get job Detail
         db.collection("jobDetail")
@@ -156,9 +158,11 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        System.out.println("jobLonLat in onMapReady function --------------------");
+        lon = (Double) getIntent().getSerializableExtra("lon");
+        lat = (Double) getIntent().getSerializableExtra("lat");
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(41.8349, -87.6270);
+        LatLng sydney = new LatLng(lat, lon);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
@@ -177,17 +181,9 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
     protected void AddFavServer (){
         CollectionReference usersCollection = db.collection("users");
-        Map<String,Object> favoriteJobs = new HashMap<>();
 
         favoriteJobs = (Map) user.get("favoriteJobs");
         favoriteJobs.put(offer_id,jobDetailData);
-
-        System.out.println("offer_id -----------------------------------------------");
-        System.out.println(offer_id);
-        System.out.println("jobDetailData -----------------------------------------------");
-        System.out.println(jobDetailData);
-        System.out.println("favoriteJobs -----------------------------------------------");
-        System.out.println(favoriteJobs);
 
         user.put("favoriteJobs",favoriteJobs);
 
@@ -197,19 +193,12 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         item.setIcon(R.drawable.ic_star_white_24dp);
         test_fav = 1;
 
-        System.out.println("usersDocument -----------------------------------------------");
-        System.out.println(usersCollection.document(user.get("username").toString()));
     }
 
     protected void RemoveFavServer (){
         CollectionReference usersCollection = db.collection("users");
-        Map<String,Object> favoriteJobs = new HashMap<>();
-
         favoriteJobs = (Map) user.get("favoriteJobs");
         favoriteJobs.remove(offer_id);
-
-        System.out.println("favoriteJobs -----------------------------------------------");
-        System.out.println(favoriteJobs);
 
         user.put("favoriteJobs",favoriteJobs);
 
@@ -218,9 +207,5 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         Toast.makeText(OfferActivity.this, "remove from favorite!" , Toast.LENGTH_LONG).show();
         item.setIcon(R.drawable.ic_star_border_black_24dp);
         test_fav = 0;
-
-        System.out.println("usersDocument -----------------------------------------------");
-        System.out.println(usersCollection.document(user.get("username").toString()));
     }
-
 }

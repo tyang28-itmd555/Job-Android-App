@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ProgressDialog dialog;
     private SearchView searchView;
     private String user_id;
-    private Map user;
+    private Map user,jobLonLat;
 
     SwipeRefreshLayout swipeHome;
     private FirebaseFirestore db;
@@ -66,6 +66,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
         db = FirebaseFirestore.getInstance();
+        jobLonLat = new HashMap();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,7 +79,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         swipeHome.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                OfferServer offerServer = new OfferServer();
                 swipeHome.setRefreshing(false);
             }
         });
@@ -96,7 +96,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 intent.setClass(HomeActivity.this,OfferActivity.class);
                 intent.putExtra("offer_id",listOffers.get(position).getId());
 //                intent.putExtra("user_id",user_id);
+                System.out.println("view-----------------");
+                System.out.println(view);
+                System.out.println("id-----------------");
+                System.out.println(id);
+
+                System.out.println("listOffers current-----------------");
+                System.out.println(listOffers.get(position).getLat());
+
+
                 intent.putExtra("user", (Serializable) user);
+                intent.putExtra("lon", listOffers.get(position).getLon());
+                intent.putExtra("lat", listOffers.get(position).getLat());
                 startActivity(intent);
             }
         });
@@ -109,15 +120,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                                 String id = document.getId();
                                 String title = document.getData().get("title").toString();
                                 String place = document.getData().get("place").toString();
-                                String contract = document.getData().get("contract").toString();
-                                String dateCreate = document.getData().get("data").toString();
+                                Double lon = new Double(document.getData().get("lon").toString());
+                                Double lat = new Double(document.getData().get("lat").toString());
                                 String company = document.getData().get("company").toString();
-                                Offer offer = new Offer(id,title,place,contract,dateCreate,company);
+                                Offer offer = new Offer(id,title,place,lon,lat,company);
                                 listOffers.add(offer);
                             }
                             Toast.makeText(HomeActivity.this, listOffers.get(0).toString(), Toast.LENGTH_SHORT).show();
@@ -152,29 +161,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
-//        MenuItem item = menu.findItem(R.id.menu_search);
-//        searchView = (SearchView)item.getActionView();
-//        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-//            @Override
-//            public boolean onClose() {
-////                OfferServer offerServer = new OfferServer();
-//                return false;
-//            }
-//        });
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-////                OfferServer offerServer = new OfferServer();
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//
-//                return false;
-//            }
-//        });
-
         return true;
     }
 
@@ -190,11 +176,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.menu_search) {
-//            return true;
-//        }
 
         return super.onOptionsItemSelected(item);
     }
