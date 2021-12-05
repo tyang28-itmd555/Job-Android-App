@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginTop="15dp"
-                android:text="details"
+                android:text="DETAILS"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"

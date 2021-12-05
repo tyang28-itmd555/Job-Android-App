@@ -29,7 +29,7 @@
         android:layout_marginBottom="-2dp"
         android:layout_toEndOf="@+id/dateFormation"
         android:layout_toRightOf="@+id/dateFormation"
-        android:paddingLeft="30dp"
+        android:paddingLeft="20dp"
         android:text=""
         android:textAlignment="textStart"
         android:textSize="16sp"

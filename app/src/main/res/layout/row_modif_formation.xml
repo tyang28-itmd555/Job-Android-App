@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="40dp">
+
     <EditText
         android:id="@+id/txtDate"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/input_field"
         android:ems="10"
@@ -18,14 +21,15 @@
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp" />
+
     <EditText
         android:id="@+id/txtDiplome"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/txtDate"
         android:layout_alignBottom="@+id/txtDate"
-        android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
 
         android:layout_toEndOf="@+id/txtDate"
         android:layout_toRightOf="@+id/txtDate"
@@ -35,42 +39,43 @@
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textSize="15sp" />
+
     <EditText
         android:id="@+id/txtEcole"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtDate"
-        android:layout_alignStart="@+id/txtDate"
         android:layout_below="@+id/txtDate"
+        android:layout_alignStart="@+id/txtDate"
+        android:layout_alignLeft="@+id/txtDate"
+        android:layout_alignEnd="@+id/txtDiplome"
+        android:layout_alignRight="@+id/txtDiplome"
         android:layout_marginTop="16dp"
         android:background="@drawable/input_field"
         android:ems="10"
         android:hint="Major"
         android:inputType="textPersonName"
         android:padding="10dp"
-        android:textSize="15sp"
-        android:layout_alignRight="@+id/txtDiplome"
-        android:layout_alignEnd="@+id/txtDiplome" />
+        android:textSize="15sp" />
+
     <Button
         android:id="@+id/button"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
 
-        android:background="@drawable/ic_cancel_black_24dp"
         android:layout_alignBaseline="@+id/txtDiplome"
         android:layout_alignBottom="@+id/txtDiplome"
-        android:layout_toRightOf="@+id/txtDiplome"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_toEndOf="@+id/txtDiplome"
-        android:layout_marginLeft="18dp"
-        android:layout_marginStart="18dp"
-        android:onClick="onDelete2"/>
+        android:layout_toRightOf="@+id/txtDiplome"
+        android:background="@drawable/ic_cancel_black_24dp"
+        android:onClick="onDelete2" />
 
     <TextView
         android:id="@+id/idFormation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
 
 </RelativeLayout>

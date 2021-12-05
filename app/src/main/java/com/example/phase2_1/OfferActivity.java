@@ -60,6 +60,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
     private GoogleMap mMap;
     private Map jobDetailData;//jobDetailData
     private Map user;
+    private Double lon,lat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
         Toolbar toolbar =(Toolbar) findViewById(R.id.toolbar_offer);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("details de l'offre");
+        getSupportActionBar().setTitle("Job details");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -82,6 +83,11 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         user = (HashMap)getIntent().getSerializableExtra("user");
 
         offer_id = getIntent().getStringExtra("offer_id");
+        System.out.println("lon-------------------");
+        System.out.println(getIntent().getStringExtra("lon"));
+
+        lon = getIntent().getDoubleExtra("lon",0);
+        lat = getIntent().getDoubleExtra("lat",0);
 
         title = (TextView)findViewById(R.id.offer_title);
         company = (TextView)findViewById(R.id.offer_company);
@@ -147,13 +153,14 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         return true;
     }
 
+    //render the google map
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(41.8349, -87.6270);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng latlng = new LatLng(lat, lon);
+        mMap.addMarker(new MarkerOptions().position(latlng));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
     }
 
     public void VerifServer (){
