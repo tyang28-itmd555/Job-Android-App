@@ -60,7 +60,7 @@ public class FavorisActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_fav);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Favoris Job");
+        getSupportActionBar().setTitle("Favorite Job");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -46,9 +46,8 @@ public class ModifcvActivity extends AppCompatActivity {
     LinearLayout linearLayoutP ;
     LinearLayout linearLayoutP2 ;
     Map user_cv,user,resumeExeperience,resumeFormation;
-    String mFirstName,mLastName,mAdress,mTel,mAge,mEmail;
-    EditText lastName,firstName,email,adress,tel,age;
-    ProgressDialog dialog;
+    String mFirstName,mLastName,mAdress,mTel,mEmail;
+    EditText lastName,firstName,email,adress,tel;
     List<String> expAsupp,formationAsupp;
     String midExp,mbegin,mend,mposition,mcompany,mabout;
     String midFormation,mdate,mname,mschool;
@@ -63,11 +62,9 @@ public class ModifcvActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.modifcvToolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Modifier mon CV");
+        getSupportActionBar().setTitle("Modify My CV");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.waiting));
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         user_cv = (HashMap)getIntent().getSerializableExtra("userCv");
         user = (HashMap)getIntent().getSerializableExtra("user");
@@ -83,7 +80,6 @@ public class ModifcvActivity extends AppCompatActivity {
         email =(EditText)findViewById(R.id.txtEmail);
         adress =(EditText)findViewById(R.id.txtAdresse);
         tel =(EditText)findViewById(R.id.txtTel);
-//        age =(EditText)findViewById(R.id.txtAge);
 
         infoCvServer();//render the cv information
     }
@@ -101,7 +97,6 @@ public class ModifcvActivity extends AppCompatActivity {
         TextView idFormation = (TextView) rowView.findViewById(R.id.idFormation);
         idFormation.setText("-1");
         linearLayoutP2.addView(rowView, linearLayoutP2.getChildCount() );
-        Log.i("debug","1111");
     }
     public void onDelete(View v) {
         View view = (View) v.getParent();
@@ -136,7 +131,6 @@ public class ModifcvActivity extends AppCompatActivity {
              mFirstName = firstName.getText().toString();
              mLastName = lastName.getText().toString();
              mAdress = adress.getText().toString();
-//             mAge = age.getText().toString();
              mTel = tel.getText().toString();
              mEmail = email.getText().toString();
 
@@ -158,8 +152,6 @@ public class ModifcvActivity extends AppCompatActivity {
                 Log.i("debug",midExp+" "+mbegin+" "+mend+" "+mposition+" "+mcompany+" "+mabout);
 
                 try {
-//                    UpdateOrAddExp updateOrAddExp = new UpdateOrAddExp();
-//                    updateOrAddExp.execute("http://192.168.56.1:8080/api/experiences");
                     Thread.sleep(100);
 
                 } catch (InterruptedException e) {
@@ -185,7 +177,6 @@ public class ModifcvActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
             updateCvServer();
         }
@@ -195,8 +186,7 @@ public class ModifcvActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        System.out.println("onSupportNavigateUp=================================");
-//        finish();
+        //finish();
         return true;
     }
 
@@ -209,12 +199,10 @@ public class ModifcvActivity extends AppCompatActivity {
 
         try{
             JSONObject jsonObject = new JSONObject(user_cv);
+
             if(jsonObject.getString("email") != "null") {
                 email.setText(jsonObject.getString("email"));
             }
-//            if (jsonObject.getInt("age") != 0) {
-//                age.setText(String.valueOf(jsonObject.getInt("age")));
-//            }
             if(!jsonObject.getString("tel").equals("0")) {
                 tel.setText(jsonObject.getString("tel"));
             }
@@ -228,70 +216,64 @@ public class ModifcvActivity extends AppCompatActivity {
                 lastName.setText(jsonObject.getString("lastName"));
             }
 
-//            JSONArray jsonFormation = jsonObject.getJSONArray("formations");
-//            JSONArray jsonExperience = jsonObject.getJSONArray("experiences");
-
             Map<String,Object> formationsMap = new HashMap<>();
             formationsMap = (Map) user_cv.get("formations");
 
             Map<String,Object> experiencesMap = new HashMap<>();
             experiencesMap = (Map) user_cv.get("experiences");
 
-//            for (int i = 0 ; i < jsonExperience.length() ; i++){
             JSONObject jsonObjectExperiences = new JSONObject(experiencesMap);
 
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                 View rowView = inflater.inflate(R.layout.row_modif_experience, null);
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.row_modif_experience, null);
 
-                EditText debut = (EditText)rowView.findViewById(R.id.txtDebut);
-                EditText fin = (EditText)rowView.findViewById(R.id.txtFin);
-                EditText position = (EditText)rowView.findViewById(R.id.txtPoste);
-                EditText societe = (EditText)rowView.findViewById(R.id.txtSociete);
-                EditText about = (EditText)rowView.findViewById(R.id.txtAbout);
-                TextView idExp = (TextView) rowView.findViewById(R.id.idExp);
-                //idExp.setText(String.valueOf(jsonObjectExperiences.getLong("id")));
-                if(jsonObjectExperiences.getString("begin") != "null") {
-                    debut.setText(jsonObjectExperiences.getString("begin"));
-                }
-                if(jsonObjectExperiences.getString("end") != "null") {
-                    fin.setText(jsonObjectExperiences.getString("end"));
-                }
-                if(jsonObjectExperiences.getString("position") != "null") {
-                    position.setText(jsonObjectExperiences.getString("position"));
-                }
-                if(jsonObjectExperiences.getString("company") != "null") {
-                    societe.setText(jsonObjectExperiences.getString("company"));
-                }
-                if (jsonObjectExperiences.getString("about") != "null") {
-                    about.setText(jsonObjectExperiences.getString("about"));
-                }
+            EditText debut = (EditText)rowView.findViewById(R.id.txtDebut);
+            EditText fin = (EditText)rowView.findViewById(R.id.txtFin);
+            EditText position = (EditText)rowView.findViewById(R.id.txtPoste);
+            EditText societe = (EditText)rowView.findViewById(R.id.txtSociete);
+            EditText about = (EditText)rowView.findViewById(R.id.txtAbout);
+            TextView idExp = (TextView) rowView.findViewById(R.id.idExp);
 
-                linearLayoutP.addView(rowView, linearLayoutP.getChildCount() );
+            //idExp.setText(String.valueOf(jsonObjectExperiences.getLong("id")));
+            if(jsonObjectExperiences.getString("begin") != "null") {
+                debut.setText(jsonObjectExperiences.getString("begin"));
+            }
+            if(jsonObjectExperiences.getString("end") != "null") {
+                fin.setText(jsonObjectExperiences.getString("end"));
+            }
+            if(jsonObjectExperiences.getString("position") != "null") {
+                position.setText(jsonObjectExperiences.getString("position"));
+            }
+            if(jsonObjectExperiences.getString("company") != "null") {
+                societe.setText(jsonObjectExperiences.getString("company"));
+            }
+            if (jsonObjectExperiences.getString("about") != "null") {
+                about.setText(jsonObjectExperiences.getString("about"));
+            }
 
-//            }
-                JSONObject jsonObjectFormations = new JSONObject(formationsMap);
+            linearLayoutP.addView(rowView, linearLayoutP.getChildCount() );
 
-                LayoutInflater inflaterModif = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View ModifRowView = inflaterModif.inflate(R.layout.row_modif_formation, null);
+            JSONObject jsonObjectFormations = new JSONObject(formationsMap);
 
-                EditText date = (EditText)ModifRowView.findViewById(R.id.txtDate);
-                EditText diplome = (EditText)ModifRowView.findViewById(R.id.txtDiplome);
-                EditText ecole = (EditText)ModifRowView.findViewById(R.id.txtEcole);
-                TextView idFormation = (TextView) ModifRowView.findViewById(R.id.idFormation);
+            LayoutInflater inflaterModif = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View ModifRowView = inflaterModif.inflate(R.layout.row_modif_formation, null);
 
-//                idFormation.setText(String.valueOf(jsonObjectFormations.getLong("id")));
-                if (jsonObjectFormations.getString("date") != "null") {
-                    date.setText(jsonObjectFormations.getString("date"));
-                }
-                if(jsonObjectFormations.getString("name") != "null") {
-                    diplome.setText(jsonObjectFormations.getString("name"));
-                }
-                if(jsonObjectFormations.getString("school") != "null") {
-                    ecole.setText(jsonObjectFormations.getString("school"));
-                }
+            EditText date = (EditText)ModifRowView.findViewById(R.id.txtDate);
+            EditText diplome = (EditText)ModifRowView.findViewById(R.id.txtDiplome);
+            EditText ecole = (EditText)ModifRowView.findViewById(R.id.txtEcole);
+            TextView idFormation = (TextView) ModifRowView.findViewById(R.id.idFormation);
 
-                linearLayoutP2.addView(ModifRowView, linearLayoutP2.getChildCount() );
-//            }
+            if (jsonObjectFormations.getString("date") != "null") {
+                date.setText(jsonObjectFormations.getString("date"));
+            }
+            if(jsonObjectFormations.getString("name") != "null") {
+                diplome.setText(jsonObjectFormations.getString("name"));
+            }
+            if(jsonObjectFormations.getString("school") != "null") {
+                ecole.setText(jsonObjectFormations.getString("school"));
+            }
+
+            linearLayoutP2.addView(ModifRowView, linearLayoutP2.getChildCount() );
 
         }catch(Exception e){
             e.printStackTrace();
@@ -331,7 +313,6 @@ public class ModifcvActivity extends AppCompatActivity {
         Intent intent = new Intent(ModifcvActivity.this,MoncvActivity.class);
         intent.putExtra("user",(Serializable) user);
         startActivity(intent);
-//        }
     }
 
     protected class DeleteExp extends AsyncTask<String,Void,String>{

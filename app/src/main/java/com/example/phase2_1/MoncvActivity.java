@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,10 +21,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -49,26 +57,27 @@ public class MoncvActivity extends AppCompatActivity {
     LinearLayout linearLayoutExp,linearLayoutFormation;
     boolean testEffacer = true;
     private Map user;
+    private FirebaseFirestore db;
     Map<String,Object> userCv;
+    private static final String TAG = "DocSnippets";
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moncv);
+        db = FirebaseFirestore.getInstance();
 
-        dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.waiting));
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar.setVisibility(View.VISIBLE); // To show the ProgressBar
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.moncvToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("My CV");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        user_cv = getIntent().getStringExtra("user_cv");
         user = (HashMap)getIntent().getSerializableExtra("user");
-        System.out.println("user in the moncv-----------------------------");
-        System.out.println(user);
 
         listFormations = new ArrayList<>();
         listExperiences = new ArrayList<>();
@@ -110,6 +119,8 @@ public class MoncvActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setClass(MoncvActivity.this,ModifcvActivity.class);
             intent.putExtra("userCv", (Serializable) userCv);
+            System.out.println("userCv in cvActivity --------------");
+            System.out.println(userCv);
             intent.putExtra("user", (Serializable) user);
             startActivity(intent);
             return true;
@@ -129,89 +140,118 @@ public class MoncvActivity extends AppCompatActivity {
         return true;
     }
 
+
     public void  moncvServer() {
-        userCv = new HashMap<>();
-        userCv = (Map) user.get("resume");
-        //dialog.dismiss();
-        if (userCv == null) {
-            Toast.makeText(MoncvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        try {
-            Log.i("debug", "enter in async");
-            JSONObject jsonObject = new JSONObject(userCv);
 
-            if(jsonObject.getString("firstName") != "null" && jsonObject.getString("lastName") != "null"  &&
-            jsonObject.getString("firstName").length() > 0 && jsonObject.getString("lastName").length() > 0 )
-            {
-                name.setText(jsonObject.getString("firstName") + " " + jsonObject.getString("lastName"));
-            }
-            if(jsonObject.getString("email") != "null" && jsonObject.getString("email").length() > 0) {
-                email.setText(jsonObject.getString("email"));
-            }
+        //get job users from firebase
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if(document.getId().equals(user.get("username").toString())){
 
-            if(jsonObject.getString("tel") != "null" && jsonObject.getString("tel").length() > 0) {
-                tel.setText(jsonObject.getString("tel"));
-            }
-            if (jsonObject.getString("adress") !="null" && jsonObject.getString("adress").length() > 0) {
-                adress.setText(jsonObject.getString("adress"));
-            }
-            Map<String,Object> formationsMap = new HashMap<>();
-            formationsMap = (Map) userCv.get("formations");
+                                    Map<String,Object> dbUserMap = new HashMap<>();
+                                    dbUserMap = document.getData();
 
-            Map<String,Object> experiencesMap = new HashMap<>();
-            experiencesMap = (Map) userCv.get("experiences");
+                                    Log.d(TAG, document.getId() + " ============> " +document.getData() );
 
-            listExperiences.clear();
-            listFormations.clear();
+                                    Log.d(TAG, "userCv get before =============> " +userCv );
 
-            JSONObject jsonObjectExperiences = new JSONObject(experiencesMap);
-            JSONObject jsonObjectFormations = new JSONObject(formationsMap);
+                                    userCv = (Map) dbUserMap.get("resume");
+                                    Log.d(TAG, "userCv get after =============> " +userCv );
 
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = inflater.inflate(R.layout.row_experience2, null);
+                                    if (userCv == null) {
+                                        Toast.makeText(MoncvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    try {
+                                        Log.i("debug", "enter in async");
+                                        JSONObject jsonObject = new JSONObject(userCv);
 
-                TextView dateDebut = (TextView)view.findViewById(R.id.dateDebut);
-                TextView dateFin = (TextView)view.findViewById(R.id.dateFin);
-                TextView expPosition = (TextView)view.findViewById(R.id.expPosition);
-                TextView expCompany = (TextView)view.findViewById(R.id.expCompany);
-                TextView expAbout = (TextView)view.findViewById(R.id.expAbout);
+                                        if(jsonObject.getString("firstName") != "null" && jsonObject.getString("lastName") != "null"  &&
+                                        jsonObject.getString("firstName").length() > 0 && jsonObject.getString("lastName").length() > 0 )
+                                        {
+                                            name.setText(jsonObject.getString("firstName") + " " + jsonObject.getString("lastName"));
+                                        }
+                                        if(jsonObject.getString("email") != "null" && jsonObject.getString("email").length() > 0) {
+                                            email.setText(jsonObject.getString("email"));
+                                        }
 
-                if(jsonObjectExperiences.getString("begin") != "null") {
-                    dateDebut.setText(jsonObjectExperiences.getString("begin"));
-                }
-                if(jsonObjectExperiences.getString("end") != "null") {
-                    dateFin.setText(jsonObjectExperiences.getString("end"));
-                }
-                if(jsonObjectExperiences.getString("position") != "null") {
-                    expPosition.setText(jsonObjectExperiences.getString("position"));
-                }
-                if(jsonObjectExperiences.getString("company") != "null") {
-                    expCompany.setText(jsonObjectExperiences.getString("company"));
-                }
-                if (jsonObjectExperiences.getString("about") != "null") {
-                    expAbout.setText(jsonObjectExperiences.getString("about"));
-                }
-                linearLayoutExp.addView(view,linearLayoutExp.getChildCount());
-                LayoutInflater formationInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View formationView = formationInflater.inflate(R.layout.row_formation2, null);
+                                        if(jsonObject.getString("tel") != "null" && jsonObject.getString("tel").length() > 0) {
+                                            tel.setText(jsonObject.getString("tel"));
+                                        }
+                                        if (jsonObject.getString("adress") !="null" && jsonObject.getString("adress").length() > 0) {
+                                            adress.setText(jsonObject.getString("adress"));
+                                        }
+                                        Map<String,Object> formationsMap = new HashMap<>();
+                                        formationsMap = (Map) userCv.get("formations");
 
-                TextView dateFormation = (TextView)formationView.findViewById(R.id.dateFormation);
-                TextView nameFormation = (TextView)formationView.findViewById(R.id.nameFormation);
-                TextView schoolFormation = (TextView)formationView.findViewById(R.id.schoolformation);
+                                        Map<String,Object> experiencesMap = new HashMap<>();
+                                        experiencesMap = (Map) userCv.get("experiences");
 
-                if (jsonObjectFormations.getString("date") != "null") {
-                    dateFormation.setText(jsonObjectFormations.getString("date"));
-                }
-                if(jsonObjectFormations.getString("name") != "null") {
-                    nameFormation.setText(jsonObjectFormations.getString("name"));
-                }
-                if(jsonObjectFormations.getString("school") != "null") {
-                    schoolFormation.setText(jsonObjectFormations.getString("school"));
-                }
-                linearLayoutFormation.addView(formationView,linearLayoutFormation.getChildCount());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                                        listExperiences.clear();
+                                        listFormations.clear();
+
+                                        JSONObject jsonObjectExperiences = new JSONObject(experiencesMap);
+                                        JSONObject jsonObjectFormations = new JSONObject(formationsMap);
+
+                                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                            View view = inflater.inflate(R.layout.row_experience2, null);
+
+                                            TextView dateDebut = (TextView)view.findViewById(R.id.dateDebut);
+                                            TextView dateFin = (TextView)view.findViewById(R.id.dateFin);
+                                            TextView expPosition = (TextView)view.findViewById(R.id.expPosition);
+                                            TextView expCompany = (TextView)view.findViewById(R.id.expCompany);
+                                            TextView expAbout = (TextView)view.findViewById(R.id.expAbout);
+
+                                            if(jsonObjectExperiences.getString("begin") != "null") {
+                                                dateDebut.setText(jsonObjectExperiences.getString("begin"));
+                                            }
+                                            if(jsonObjectExperiences.getString("end") != "null") {
+                                                dateFin.setText(jsonObjectExperiences.getString("end"));
+                                            }
+                                            if(jsonObjectExperiences.getString("position") != "null") {
+                                                expPosition.setText(jsonObjectExperiences.getString("position"));
+                                            }
+                                            if(jsonObjectExperiences.getString("company") != "null") {
+                                                expCompany.setText(jsonObjectExperiences.getString("company"));
+                                            }
+                                            if (jsonObjectExperiences.getString("about") != "null") {
+                                                expAbout.setText(jsonObjectExperiences.getString("about"));
+                                            }
+                                            linearLayoutExp.addView(view,linearLayoutExp.getChildCount());
+                                            LayoutInflater formationInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                            View formationView = formationInflater.inflate(R.layout.row_formation2, null);
+
+                                            TextView dateFormation = (TextView)formationView.findViewById(R.id.dateFormation);
+                                            TextView nameFormation = (TextView)formationView.findViewById(R.id.nameFormation);
+                                            TextView schoolFormation = (TextView)formationView.findViewById(R.id.schoolformation);
+
+                                            if (jsonObjectFormations.getString("date") != "null") {
+                                                dateFormation.setText(jsonObjectFormations.getString("date"));
+                                            }
+                                            if(jsonObjectFormations.getString("name") != "null") {
+                                                nameFormation.setText(jsonObjectFormations.getString("name"));
+                                            }
+                                            if(jsonObjectFormations.getString("school") != "null") {
+                                                schoolFormation.setText(jsonObjectFormations.getString("school"));
+                                            }
+                                            linearLayoutFormation.addView(formationView,linearLayoutFormation.getChildCount());
+                                            progressBar.setVisibility(View.INVISIBLE); // To hide the ProgressBar
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+
     }
 }

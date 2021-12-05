@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,12 +62,15 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
     private Map jobDetailData;//jobDetailData
     private Map user;
     private Double lon,lat;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer);
         db = FirebaseFirestore.getInstance();
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar.setVisibility(View.VISIBLE); // To show the ProgressBar
 
         Toolbar toolbar =(Toolbar) findViewById(R.id.toolbar_offer);
         setSupportActionBar(toolbar);
@@ -78,13 +82,9 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.waiting));
         user = (HashMap)getIntent().getSerializableExtra("user");
 
         offer_id = getIntent().getStringExtra("offer_id");
-        System.out.println("lon-------------------");
-        System.out.println(getIntent().getStringExtra("lon"));
 
         lon = getIntent().getDoubleExtra("lon",0);
         lat = getIntent().getDoubleExtra("lat",0);
@@ -114,6 +114,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                                     location.setText(document.getData().get("place").toString());
                                     about.setText(document.getData().get("description").toString());
                                     company.setText(document.getData().get("company").toString());
+                                    progressBar.setVisibility(View.INVISIBLE); // To hide the ProgressBar
                                 }
                             }
                         } else {
@@ -189,8 +190,6 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
                                     Map<String,Object> dbUserMap = new HashMap<>();
                                     dbUserMap = document.getData();
-
-                                    Log.d(TAG, document.getId() + " ============> " +document.getData() );
 
                                     Map<String,Object> favoriteJobs = new HashMap<>();
                                     favoriteJobs = (Map) dbUserMap.get("favoriteJobs");
