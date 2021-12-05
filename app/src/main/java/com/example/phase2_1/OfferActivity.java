@@ -48,7 +48,6 @@ import java.util.Map;
 
 public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallback {
     private String offer_id,id;
-    private Double lon,lat;
     private Offer offer;
     private ProgressDialog dialog;
     private TextView title,company,contract,salary,location,about;
@@ -61,7 +60,6 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
     private GoogleMap mMap;
     private Map jobDetailData;//jobDetailData
     private Map user;
-    private Map<String,Object> favoriteJobs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,7 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
         Toolbar toolbar =(Toolbar) findViewById(R.id.toolbar_offer);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Job Detail");
+        getSupportActionBar().setTitle("details de l'offre");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -81,14 +79,9 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.waiting));
-        favoriteJobs = new HashMap<>();
-        user = new HashMap();
         user = (HashMap)getIntent().getSerializableExtra("user");
-        favoriteJobs = (Map) user.get("favoriteJobs");
-        offer_id = getIntent().getStringExtra("offer_id");
 
-        System.out.println("lon------------------------");
-        System.out.println(lon);
+        offer_id = getIntent().getStringExtra("offer_id");
 
         title = (TextView)findViewById(R.id.offer_title);
         company = (TextView)findViewById(R.id.offer_company);
@@ -104,10 +97,10 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            Log.d(TAG, "task.getResult()" + " => " + task.getResult());
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                jobDetailData = document.getData();
-                                Log.d(TAG, document.getId() + " ==> " + document.getData());
                                 if(document.getId().trim().equals(offer_id)){
+                                    jobDetailData = document.getData();
                                     Log.d(TAG, document.getId() + "  ===> " + document.getData());
                                     title.setText(document.getData().get("title").toString());
                                     contract.setText(document.getData().get("contract").toString());
@@ -122,15 +115,14 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                         }
                     }
                 });
+        Log.i("debug","DEBUGME => id user = "+id+" et offer id = "+offer_id);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.offer_action_bar, menu);
         item = menu.findItem(R.id.fav);
-        System.out.println("item");
-        System.out.println(item);
-
         VerifServer();
 
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -139,10 +131,9 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
                 if(test_fav == 0) {
                     System.out.println("will be invok AddFavServer");
                     AddFavServer();
-                }
-                else if(test_fav == 1) {
-                    System.out.println("will be invok removeFavServer");
+                }else {
                     RemoveFavServer();
+                    System.out.println("will be invok RemoveFavServer");
                 }
                 return true;
             }
@@ -158,18 +149,16 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        System.out.println("jobLonLat in onMapReady function --------------------");
-        lon = (Double) getIntent().getSerializableExtra("lon");
-        lat = (Double) getIntent().getSerializableExtra("lat");
+
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(lat, lon);
+        LatLng sydney = new LatLng(41.8349, -87.6270);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     public void VerifServer (){
         //judge the user whether favorite this job
-        if( user.containsKey("favoriteJobs") && ((Map<?, ?>) user.get("favoriteJobs")).containsKey(offer_id)){
+        if(((Map<?, ?>) user.get("favoriteJobs")).containsKey(offer_id)){
             //initial favorite icon
             item.setIcon(R.drawable.ic_star_white_24dp);
             test_fav = 1;
@@ -179,33 +168,84 @@ public class OfferActivity extends AppCompatActivity  implements OnMapReadyCallb
         }
     }
 
+    //add favorite
     protected void AddFavServer (){
-        CollectionReference usersCollection = db.collection("users");
+        //get job users from firebase
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if(document.getId().equals(user.get("username").toString())){
 
-        favoriteJobs = (Map) user.get("favoriteJobs");
-        favoriteJobs.put(offer_id,jobDetailData);
+                                    Map<String,Object> dbUserMap = new HashMap<>();
+                                    dbUserMap = document.getData();
 
-        user.put("favoriteJobs",favoriteJobs);
+                                    Log.d(TAG, document.getId() + " ============> " +document.getData() );
 
-        usersCollection.document(user.get("username").toString()).set(user);
+                                    Map<String,Object> favoriteJobs = new HashMap<>();
+                                    favoriteJobs = (Map) dbUserMap.get("favoriteJobs");
+                                    Log.d(TAG, "favoriteJobs add before =============> " +favoriteJobs );
 
-        Toast.makeText(OfferActivity.this, "Add to favorite!" , Toast.LENGTH_LONG).show();
-        item.setIcon(R.drawable.ic_star_white_24dp);
-        test_fav = 1;
+                                    favoriteJobs.put(offer_id,jobDetailData);
+                                    dbUserMap.put("favoriteJobs",favoriteJobs);
 
+                                    Log.d(TAG, "favoriteJobs add after =============> " +favoriteJobs );
+
+                                    CollectionReference usersCollection = db.collection("users");
+                                    usersCollection.document(user.get("username").toString()).set(dbUserMap);
+                                    Toast.makeText(OfferActivity.this, "Add to favorite!" , Toast.LENGTH_LONG).show();
+                                    item.setIcon(R.drawable.ic_star_white_24dp);
+                                    test_fav = 1;
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
+    //remove favorite
     protected void RemoveFavServer (){
-        CollectionReference usersCollection = db.collection("users");
-        favoriteJobs = (Map) user.get("favoriteJobs");
-        favoriteJobs.remove(offer_id);
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if(document.getId().equals(user.get("username").toString())){
 
-        user.put("favoriteJobs",favoriteJobs);
+                                    Map<String,Object> dbUserMap = new HashMap<>();
+                                    dbUserMap = document.getData();
 
-        usersCollection.document(user.get("username").toString()).set(user);
+                                    Log.d(TAG, document.getId() + " ============> " +document.getData() );
 
-        Toast.makeText(OfferActivity.this, "remove from favorite!" , Toast.LENGTH_LONG).show();
-        item.setIcon(R.drawable.ic_star_border_black_24dp);
-        test_fav = 0;
+                                    Map<String,Object> favoriteJobs = new HashMap<>();
+                                    favoriteJobs = (Map) dbUserMap.get("favoriteJobs");
+                                    Log.d(TAG, "favoriteJobs remove before =============> " +favoriteJobs );
+
+                                    favoriteJobs.remove(offer_id);
+                                    dbUserMap.put("favoriteJobs",favoriteJobs);
+
+                                    Log.d(TAG, "favoriteJobs remove after =============> " +favoriteJobs );
+
+                                    CollectionReference usersCollection = db.collection("users");
+                                    usersCollection.document(user.get("username").toString()).set(dbUserMap);
+                                    Toast.makeText(OfferActivity.this, "Add to favorite!" , Toast.LENGTH_LONG).show();
+
+                                    item.setIcon(R.drawable.ic_star_border_black_24dp);
+                                    test_fav = 0;
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
+
 }

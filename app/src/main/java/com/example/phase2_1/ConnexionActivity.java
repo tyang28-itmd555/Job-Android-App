@@ -126,9 +126,6 @@ public class ConnexionActivity extends AppCompatActivity {
                                 if (document.exists()) {
                                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                                     //judg the password wether right
-                                    Log.d(TAG, "DocumentSnapshot data password: " + document.getData().get("password"));
-                                    Log.d(TAG, "password: " + password);
-
                                     if(password.equals(document.getData().get("password"))){
                                         Log.d(TAG, "password: right" );
                                         Toast.makeText(ConnexionActivity.this, "Login successful!", Toast.LENGTH_LONG).show();

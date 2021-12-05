@@ -117,7 +117,9 @@ public class FavorisActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(FavorisActivity.this,OfferActivity.class);
-                intent.putExtra("offer_id",String.valueOf(listOffers.get(position).getId()));
+                System.out.println("listOffers.get(position).getId()-----------------");
+                System.out.println(listOffers.get(position).getId());
+                intent.putExtra("offer_id",listOffers.get(position).getId());
                 intent.putExtra("user",(Serializable) user);
                 intent.putExtra("lon", listOffers.get(position).getLon());
                 intent.putExtra("lat", listOffers.get(position).getLat());

@@ -130,7 +130,6 @@ public class ModifcvActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        System.out.println("onOptionsItemSelected=========================================");
         int id = item.getItemId();
         if (id == R.id.menuModifcvValider){
 
@@ -182,26 +181,13 @@ public class ModifcvActivity extends AppCompatActivity {
                 mname = diplome.getText().toString();
 
                 try {
-//                    UpdateOrAddFormation updateOrAddFormation= new UpdateOrAddFormation();
-//                    updateOrAddFormation.execute("http://192.168.56.1:8080/api/formations");
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
             }
-
             updateCvServer();
-
-            for (int i = 0 ; i < expAsupp.size() ; i++ ){
-                DeleteExp deleteExp = new DeleteExp();
-                deleteExp.execute("http://192.168.56.1:8080/api/experiences/"+expAsupp.get(i));
-            }
-            for (int i = 0 ; i < formationAsupp.size() ; i++ ){
-                DeleteFormation deleteFormation = new DeleteFormation();
-                deleteFormation.execute("http://192.168.56.1:8080/api/formations/"+formationAsupp.get(i));
-            }
-//            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -347,78 +333,6 @@ public class ModifcvActivity extends AppCompatActivity {
         startActivity(intent);
 //        }
     }
-
-//    protected class UpdateOrAddExp extends AsyncTask<String,Void,String>{
-//        @Override
-//        protected String doInBackground(String... params) {
-//            try{
-//                HttpClient client = new DefaultHttpClient();
-//                HttpPost post = new HttpPost(params[0]);
-//                List<NameValuePair> form = new ArrayList<>();
-//                form.add(new BasicNameValuePair("idCV",user_cv));
-//                form.add(new BasicNameValuePair("id",midExp));
-//                form.add(new BasicNameValuePair("begin",mbegin));
-//                form.add(new BasicNameValuePair("end",mend));
-//                form.add(new BasicNameValuePair("position",mposition));
-//                form.add(new BasicNameValuePair("company",mcompany));
-//                form.add(new BasicNameValuePair("about",mabout));
-//                post.setEntity(new UrlEncodedFormEntity(form,HTTP.UTF_8));
-//                ResponseHandler<String> buffer = new BasicResponseHandler();
-//                String result = client.execute(post,buffer);
-//                a++;
-//                Log.i("debug","a ==> "+a);
-//                return result;
-//
-//            }catch(Exception e){
-//                e.printStackTrace();
-//                return null;
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            if (s == null) {
-//                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            Log.i("debug","in modif or add exp");
-//
-//
-//        }
-//    }
-
-//    protected class UpdateOrAddFormation extends AsyncTask<String,Void,String>{
-//        @Override
-//        protected String doInBackground(String... params) {
-//            try{
-//                HttpClient client = new DefaultHttpClient();
-//                HttpPost post = new HttpPost(params[0]);
-//                List<NameValuePair> form = new ArrayList<>();
-//                form.add(new BasicNameValuePair("idCV",user_cv));
-//                form.add(new BasicNameValuePair("id",midFormation));
-//                form.add(new BasicNameValuePair("date",mdate));
-//                form.add(new BasicNameValuePair("name",mname));
-//                form.add(new BasicNameValuePair("school",mschool));
-//                post.setEntity(new UrlEncodedFormEntity(form,HTTP.UTF_8));
-//                ResponseHandler<String> buffer = new BasicResponseHandler();
-//                String result = client.execute(post,buffer);
-//                return result;
-//
-//            }catch(Exception e){
-//                e.printStackTrace();
-//                return null;
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            if (s == null) {
-//                Toast.makeText(ModifcvActivity.this, "erreur de connexion", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            Log.i("debug","in modif or add formation");
-//        }
-//    }
 
     protected class DeleteExp extends AsyncTask<String,Void,String>{
         @Override
